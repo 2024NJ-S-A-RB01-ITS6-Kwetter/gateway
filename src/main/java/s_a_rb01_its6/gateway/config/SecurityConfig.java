@@ -12,6 +12,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import s_a_rb01_its6.gateway.exceptionhandling.AccessDeniedHandler;
+import s_a_rb01_its6.gateway.exceptionhandling.UnauthorizedAccesHandler;
 
 import java.util.Arrays;
 
@@ -20,17 +22,23 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final UnauthorizedAccesHandler unauthorizedAccesHandler;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize -> authorize
-                        .pathMatchers(HttpMethod.POST, "/api/user/register" ).permitAll() // Registration is public
+                        .pathMatchers(HttpMethod.POST, "/api/v1/user/register" ).permitAll() // Registration is public
                         .anyExchange().authenticated() // All other endpoints require authentication
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults()) // JWT token validation using the new Customizer approach
+                        .authenticationEntryPoint(unauthorizedAccesHandler)
+                        .jwt(Customizer.withDefaults()) // JWT token validation
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler) // Handle 403 errors
                 );
         return http.build();
     }
