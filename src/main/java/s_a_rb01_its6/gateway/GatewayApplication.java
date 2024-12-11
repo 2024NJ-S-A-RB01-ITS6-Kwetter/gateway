@@ -1,17 +1,13 @@
 package s_a_rb01_its6.gateway;
 
-import io.github.cdimascio.dotenv.Dotenv;
+//import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class GatewayApplication {
 
-
 	public static void main(String[] args) {
-		//Load Environment Variables for local development, this is not needed in production as docker-compose will handle this.
-		Dotenv dotenv = Dotenv.configure().load();
-		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 }

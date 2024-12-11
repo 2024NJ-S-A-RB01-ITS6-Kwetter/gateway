@@ -2,6 +2,7 @@ package s_a_rb01_its6.gateway.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${cors.allowed-origins}")
+    private String corsAllowedOrigin;
+
     private final UnauthorizedAccesHandler unauthorizedAccesHandler;
     private final AccessDeniedHandler accessDeniedHandler;
 
@@ -34,7 +38,7 @@ public class SecurityConfig {
                         .anyExchange().authenticated() // All other endpoints require authentication
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .authenticationEntryPoint(unauthorizedAccesHandler)
+                        .authenticationEntryPoint(unauthorizedAccesHandler) //deals with 401 errors
                         .jwt(Customizer.withDefaults()) // JWT token validation
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -43,10 +47,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Add your frontend origin
+
+
+        corsConfig.setAllowedOrigins(Arrays.asList(corsAllowedOrigin)); // Add your frontend origin
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfig.setAllowCredentials(true);
