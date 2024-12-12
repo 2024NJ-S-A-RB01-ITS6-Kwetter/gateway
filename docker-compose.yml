@@ -55,7 +55,7 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     ports:
-      - "8181:8080"
+      - "8080:8080"
     volumes:
       - ./docker/keycloak/realms/:/opt/keycloak/data/import/
     depends_on:
