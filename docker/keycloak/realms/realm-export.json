@@ -84,6 +84,15 @@
         "clientRole": false,
         "containerId": "kwetter",
         "attributes": {}
+      },
+      {
+        "id": "bd003a6e-e7e8-4203-9e88-29cff6dacd3a",
+        "name": "ADMIN_USER_KWETTER_REALM",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "kwetter",
+        "attributes": {}
       }
     ],
     "client": {
@@ -341,6 +350,15 @@
           "attributes": {}
         },
         {
+          "id": "4c111633-e4b3-4608-a0bb-50b5e405c576",
+          "name": "ADMIN_USER",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "2289abc6-8fbd-4c02-b501-e177c91e7598",
+          "attributes": {}
+        },
+        {
           "id": "43a5576e-3fab-4eb4-945a-0fda7a11d1b9",
           "name": "delete-account",
           "description": "${role_delete-account}",
@@ -396,6 +414,15 @@
           "id": "6c6bd988-869c-42e0-a59d-e521d32b91c1",
           "name": "view-groups",
           "description": "${role_view-groups}",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "2289abc6-8fbd-4c02-b501-e177c91e7598",
+          "attributes": {}
+        },
+        {
+          "id": "5593060f-c2f7-4943-a076-a857a86843ac",
+          "name": "USER_USER",
+          "description": "",
           "composite": false,
           "clientRole": true,
           "containerId": "2289abc6-8fbd-4c02-b501-e177c91e7598",
@@ -684,6 +711,7 @@
       "protocol": "openid-connect",
       "attributes": {
         "oidc.ciba.grant.enabled": "false",
+        "post.logout.redirect.uris": "+",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.session.required": "true",
         "backchannel.logout.revoke.offline.tokens": "false"
@@ -871,7 +899,8 @@
           "config": {
             "id.token.claim": "true",
             "introspection.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
           }
         }
       ]
@@ -1385,11 +1414,11 @@
             "saml-user-attribute-mapper",
             "saml-user-property-mapper",
             "saml-role-list-mapper",
+            "oidc-usermodel-attribute-mapper",
             "oidc-sha256-pairwise-sub-mapper",
-            "oidc-address-mapper",
-            "oidc-usermodel-property-mapper",
             "oidc-full-name-mapper",
-            "oidc-usermodel-attribute-mapper"
+            "oidc-usermodel-property-mapper",
+            "oidc-address-mapper"
           ]
         }
       },
@@ -1441,13 +1470,13 @@
         "config": {
           "allowed-protocol-mapper-types": [
             "oidc-usermodel-property-mapper",
-            "saml-user-property-mapper",
-            "oidc-full-name-mapper",
-            "saml-user-attribute-mapper",
+            "oidc-address-mapper",
             "oidc-sha256-pairwise-sub-mapper",
-            "saml-role-list-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-address-mapper"
+            "saml-user-attribute-mapper",
+            "saml-role-list-mapper",
+            "saml-user-property-mapper",
+            "oidc-full-name-mapper"
           ]
         }
       },
