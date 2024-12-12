@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -21,6 +23,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityConfig {
 
     @Value("${cors.allowed-origins}")
@@ -36,6 +39,7 @@ public class SecurityConfig {
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers(HttpMethod.POST, "/api/v1/user/register" ).permitAll() // Registration is public
                         .anyExchange().authenticated() // All other endpoints require authentication
+
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(unauthorizedAccesHandler) //deals with 401 errors

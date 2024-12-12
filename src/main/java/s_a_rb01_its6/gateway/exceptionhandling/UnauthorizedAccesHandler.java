@@ -16,6 +16,7 @@ public class UnauthorizedAccesHandler implements ServerAuthenticationEntryPoint 
         return Mono.fromRunnable(() -> {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             // TODO ADD LOGS
+            System.out.println("Unauthorized access REEEEEEEEEE");
         });
     }
 }
