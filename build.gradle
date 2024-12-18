@@ -55,7 +55,7 @@ jacocoTestReport {
 sonarqube {
 	properties {
 		property 'sonar.host.url', 'https://sonarcloud.io'
-		property 'sonar.organization', 'bwildeman'
+		property 'sonar.organization', '2024nj-s-a-rb01-its6-kwetter'
 		property 'sonar.projectKey', '2024NJ-S-A-RB01-ITS6-Kwetter_gateway'
 	}
 }
