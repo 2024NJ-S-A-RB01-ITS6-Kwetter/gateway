@@ -15,6 +15,9 @@ public class Routes {
     @Value("${post.service.url}")
     private String postServiceUrl;
 
+    @Value("${follow.service.url}")
+    private String followServiceUrl;
+
     @Bean
     public RouteLocator userServiceRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -31,6 +34,10 @@ public class Routes {
                 .route("post-service", r -> r
                         .path("/api/v1/post/**")
                         .uri(postServiceUrl)
+                )
+                .route("follow-service", r -> r
+                        .path("/api/v1/follow/**")
+                        .uri(followServiceUrl)
                 ).build();
 
         //TODO expand routes for other microservices.
