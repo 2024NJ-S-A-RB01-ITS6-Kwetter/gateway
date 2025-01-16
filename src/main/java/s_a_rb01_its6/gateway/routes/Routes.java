@@ -1,14 +1,14 @@
 package s_a_rb01_its6.gateway.routes;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class Routes {
-    //define routes
+    // Define routes
     @Value("${user.service.url}")
     private String userServiceUrl;
 
@@ -18,21 +18,31 @@ public class Routes {
     @Bean
     public RouteLocator userServiceRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                //user registraton route
+                // User registration route
                 .route("user-register", r -> r
                         .path("/api/v1/user/register")
                         .uri(userServiceUrl)
                 )
-                // user service route with authorization
+                // User service route with retry filter
                 .route("user-service", r -> r
                         .path("/api/v1/user/**")
+                        .filters(f -> f.retry(config -> config
+                                .setRetries(3) // Number of retries
+                                .setStatuses(org.springframework.http.HttpStatus.BAD_GATEWAY,
+                                        org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE))) // Retry for specific statuses
                         .uri(userServiceUrl)
                 )
+                // Post service route with retry filter
                 .route("post-service", r -> r
                         .path("/api/v1/post/**")
+                        .filters(f -> f.retry(config -> config
+                                .setRetries(3)
+                                .setStatuses(org.springframework.http.HttpStatus.BAD_GATEWAY,
+                                        org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)))
                         .uri(postServiceUrl)
-                ).build();
+                )
+                .build();
 
-        //TODO expand routes for other microservices.
+        // TODO expand routes for other microservices.
     }
 }
