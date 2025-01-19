@@ -47,6 +47,16 @@ public class Routes {
                                 .filter(handleConnectException())) // Apply exception handler
                         .uri(postServiceUrl)
                 )
+                .route("follow-service", r -> r
+                        .path("/api/v1/follow/**")
+                        .filters(f -> f
+                                .retry(config -> config
+                                        .setRetries(3)
+                                        .setStatuses(org.springframework.http.HttpStatus.BAD_GATEWAY,
+                                                org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE))
+                                .filter(handleConnectException())) // Apply exception handler
+                        .uri(postServiceUrl)
+                )
                 .build();
     }
 
