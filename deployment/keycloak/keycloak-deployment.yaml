@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:24.0.1
+        command: ["/opt/keycloak/bin/kc.sh", "start-dev", "--import-realm", "--spi-hostname-default-ssl-required=none","--verbose"]
+        ports:
+        - containerPort: 8080
+        env:
+        - name: JAVA_OPTS
+          value: "-Dkeycloak.connectionsHotRod.enableSecurity=false -Djava.util.logging.ConsoleHandler.level=ALL -Dlogging.level.org.infinispan=DEBUG"
+        envFrom:
+        - configMapRef:
+            name: keycloak-config
+        - secretRef:
+            name: keycloak-secret
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "600m"
+          limits:
+            memory: "4Gi"
+            cpu: "1500m"
+        volumeMounts:
+        - name: realm-data
+          mountPath: /opt/keycloak/data/import/
+      initContainers:
+      - name: init-realm
+        image: busybox
+        command:
+        - sh
+        - -c
+        - >
+          mkdir -p /data && cp /config/realm.json /data/realm.json;
+        volumeMounts:
+        - name: realm-config
+          mountPath: /config
+        - name: realm-data
+          mountPath: /data
+      volumes:
+      - name: realm-config
+        configMap:
+          name: keycloak-config
+          items:
+          - key: realm.json
+            path: realm.json
+      - name: realm-data
+        persistentVolumeClaim:
+          claimName: keycloak-realm-pvc

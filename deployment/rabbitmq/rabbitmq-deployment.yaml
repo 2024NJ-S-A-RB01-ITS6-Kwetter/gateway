@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 5672 # RabbitMQ service port
+        - containerPort: 15672 # Management console
+        envFrom:
+        - secretRef:
+            name: rabbitmq-secret
+        resources:
+          requests:
+            memory: "400Mi"
+            cpu: "100m"
+          limits:
+            memory: "600Mi"
+            cpu: "200m"
+        readinessProbe:
+          tcpSocket:
+            port: 5672
+          initialDelaySeconds: 25
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5672
+          initialDelaySeconds: 25
+          periodSeconds: 20
